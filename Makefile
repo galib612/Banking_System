@@ -11,7 +11,7 @@ mariadbauthrm:
 	docker rm mariadbauth
 
 createmariadb:
-	docker exec -it mariadbauth mariadb --user root -psecret -e 'create database simple_bank'
+	docker exec -it mariadbauth --user root -psecret -e 'create database simple_bank'
 
 mariadbmigrateup:
 	migrate -path authdb/migration -database "mysql://root:secret@tcp(localhost:3306)/simple_bank?parseTime=true" -verbose up
