@@ -32,25 +32,19 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
       mariadbauth:
         # Docker Hub image
         image: mariadb:latest
         # Provide the password for postgres
         env:
-          MARIADB_USER: galib
-          MARIADB_PASSWORD: secret
-          MARIADB_ROOT_PASSWORD: secret
-          MARIADB_DB: simple_bank
+          MYSQL_USER: galib
+          MYSQL_PASSWORD: secret
+          MYSQL_ROOT_PASSWORD: secret
+          MYSQL_DATABASE: simple_bank
         ports:
           # Maps tcp port 5432 on service container to the host
           - 3306:3306
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd mariadb_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
@@ -65,10 +59,9 @@ jobs:
         curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.2/migrate.linux-amd64.tar.gz | tar xvz
         sudo mv migrate /usr/bin/migrate
         which migrate
-
     - name: Run postgres migration
       run: make migrateup
-
+      
     - name: Run mariadb migration
       run: make mariadbmigrateup
       
