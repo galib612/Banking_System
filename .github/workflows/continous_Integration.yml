@@ -2,9 +2,9 @@ name: ci-test
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
 
@@ -15,7 +15,7 @@ jobs:
     # Service containers to run with `container-job`
     services:
       # Label used to access the service container
-      postgres:
+      postgres12:
         # Docker Hub image
         image: postgres:12
         # Provide the password for postgres
@@ -26,6 +26,25 @@ jobs:
         ports:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      mariadbauth:
+        # Docker Hub image
+        image: mariadb:latest
+        # Provide the password for postgres
+        env:
+          MARIADB_USER: galib
+          MARIADB_PASSWORD: secret
+          MARIADB_ROOT_PASSWORD: secret
+          MARIADB_DB: simple_bank
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 3306:3306
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -46,8 +65,11 @@ jobs:
         curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.2/migrate.linux-amd64.tar.gz | tar xvz
         sudo mv migrate /usr/bin/migrate
         which migrate
-    - name: Run migration
+    - name: Run postgres migration
       run: make migrateup
+
+    - name: Run mariadb migration
+      run: make mariadbmigrateup
       
     - name: Test
       run: make test
