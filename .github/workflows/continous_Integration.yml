@@ -33,7 +33,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      mariadb:
+      mariadbauth:
         # Docker Hub image
         image: mariadb:latest
         # Provide the password for postgres
@@ -41,10 +41,17 @@ jobs:
           MARIADB_USER: galib
           MARIADB_PASSWORD: secret
           MARIADB_ROOT_PASSWORD: secret
-          MARIADB_DB: simple_bank
+          MARIADB_DATABASE: simple_bank
         ports:
           # Maps tcp port 5432 on service container to the host
           - 3306:3306
+
+        options: >-
+          --health-cmd mariadbadmin ping -h localhost
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
@@ -61,12 +68,6 @@ jobs:
         which migrate
     - name: Run postgres migration
       run: make migrateup
-
-    - name: crete mariadb conatiner
-      run: make mariadb
-      
-    - name: create db mariadb
-      run: make createmariadb
       
     - name: Run mariadb migration
       run: make mariadbmigrateup
