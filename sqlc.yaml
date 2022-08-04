@@ -1,0 +1,27 @@
+version: "1"
+project:
+    id: ""
+packages:
+  - name: "db"
+    path: "./db/sqlc"
+    queries: "./db/query/"
+    schema: "./db/migration/"
+    engine: "postgresql"
+    emit_json_tags: true
+    emit_prepared_queries: false
+    emit_interface: true
+    emit_exact_table_names: false
+    emit_empty_slices: true
+
+  - name: "authdb"
+    path: "./authdb/sqlc"
+    queries: "./authdb/query/"
+    schema: "./authdb/migration/"
+    engine: "mysql"
+    emit_json_tags: true
+    emit_prepared_queries: false
+    emit_interface: false
+    emit_exact_table_names: false
+    emit_empty_slices: true
+
+
