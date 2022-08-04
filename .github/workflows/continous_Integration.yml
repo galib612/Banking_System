@@ -33,7 +33,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      mariadbauth:
+      mariadb:
         # Docker Hub image
         image: mariadb:latest
         # Provide the password for postgres
@@ -62,6 +62,9 @@ jobs:
     - name: Run postgres migration
       run: make migrateup
 
+    - name: crete mariadb conatiner
+      run: make mariadb
+      
     - name: create db mariadb
       run: make createmariadb
       
