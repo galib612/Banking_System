@@ -2,7 +2,7 @@ name: ci-test
 
 on:
   push:
-    branches: [ maain ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
