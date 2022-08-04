@@ -33,7 +33,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      mariadb:
+      mariadbauth:
         # Docker Hub image
         image: mariadb:latest
         # Provide the password for postgres
