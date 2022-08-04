@@ -1,0 +1,73 @@
+SetUp:------------------
+		db
+
+postgres image:
+	docker pull postgres:12-alpine
+
+
+start a postgres instance
+	docker run --name postgres12 -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:12-alpine
+
+	Run the container
+		docker exec -it postgres12 psql
+		docker exec -it postgres12 psql -U root
+		The postgrSql images setup trust authentication locally so may notice password is not required when connecting from localhost
+
+TablePlus is a modern, native tool with elegant UI that allows you to simultaneously manage multiple databases such as MySQL, PostgreSQL, SQLite, Microsoft SQL Server and more.
+
+			sudo apt install software-properties-common
+
+		# Add TablePlus gpg key
+			wget -qO - http://deb.tableplus.com/apt.tableplus.com.gpg.key | sudo apt-key add -
+
+		# Add TablePlus repo
+			sudo add-apt-repository "deb [arch=amd64] https://deb.tableplus.com/debian/20 tableplus main"
+
+		# Install
+			sudo apt update
+			sudo apt install tableplus
+
+
+Golang Migrate
+	https://github.com/golang-migrate/migrate/tree/master/cmd/migrate
+
+	curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz
+	sudo mv migrate.linux-amd64 $GOPATH/bin/migrate
+
+
+	create folder inside go/src/Assignment/simplebank ---> db/migration
+	run this commond
+		migrate create -ext sql -dir db/migration -seq init_schema
+
+
+	create a database through terminal {make createdb}
+		docker exec -it postgres12 createdb --username=root --owner=root simple_bank
+	
+
+	run commond to create table and migrate.
+		migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose up
+
+Install SQLC tool 
+	https://docs.sqlc.dev/en/latest/overview/install.html
+
+	run commond 
+		sqlc init --- it' generate sqlc.yaml file
+
+		make sqlc   --> generate and reflect sql query with go intefaces, struct and mpore
+
+		go mod init github.com/galib612/simplebank
+
+		go mod tidy
+ 
+
+
+.............................................................................................
+Setup Postgres service in github acction:
+
+    https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers
+
+Setup Golang-migrate CLI:
+    https://github.com/golang-migrate/migrate/tree/master/cmd/migrate
+
+SetUp gin:
+    https://github.com/gin-gonic/gin

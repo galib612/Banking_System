@@ -1,0 +1,236 @@
+definitions:
+  api.CreateAccountRequest:
+    properties:
+      balance:
+        type: integer
+      currency:
+        enum:
+        - USD
+        - EUR
+        - RUP
+        type: string
+      owner:
+        type: string
+    required:
+    - currency
+    - owner
+    type: object
+  api.UpdateAccountRequest:
+    properties:
+      balance:
+        type: integer
+      id:
+        type: integer
+    required:
+    - balance
+    - id
+    type: object
+  db.Account:
+    properties:
+      balance:
+        type: integer
+      created_at:
+        type: string
+      currency:
+        type: string
+      id:
+        type: integer
+      owner:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: mohammd.galib@nokia.com
+    name: API Support
+    url: https://github.com/galib612/simplebank
+  description: This is sample simple bank client server. Its developed in golang environment
+    and used Postgres Db. For Routing gin web frame work is used in this Rest Api.
+  license:
+    name: Nokia
+    url: www.nokia.com
+  termsOfService: www.nokia.com
+  title: Simple Bank Api
+  version: "1.0"
+paths:
+  /accounts/create/:
+    post:
+      consumes:
+      - application/json
+      description: Create New Account
+      parameters:
+      - description: Create account
+        in: body
+        name: AccountReq
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Account'
+        "400":
+          description: error
+          schema:
+            type: string
+        "404":
+          description: error
+          schema:
+            type: string
+        "500":
+          description: error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Creare an account
+      tags:
+      - accounts
+  /accounts/delete/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Delete Account by id
+      parameters:
+      - description: Delete Account Req
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ok
+          schema:
+            type: string
+        "400":
+          description: error
+          schema:
+            type: string
+        "404":
+          description: error
+          schema:
+            type: string
+        "500":
+          description: error
+          schema:
+            type: string
+      summary: Delete an Account
+      tags:
+      - accounts
+  /accounts/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Account by id
+      parameters:
+      - description: Get Account Req
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Account'
+        "400":
+          description: error
+          schema:
+            type: string
+        "404":
+          description: error
+          schema:
+            type: string
+        "500":
+          description: error
+          schema:
+            type: string
+      summary: Get an account
+      tags:
+      - accounts
+  /accounts/list/:
+    get:
+      consumes:
+      - application/json
+      description: List Account Based on page_no and page_id
+      parameters:
+      - in: query
+        minimum: 1
+        name: pageId
+        required: true
+        type: integer
+      - in: query
+        maximum: 10
+        minimum: 1
+        name: pageSize
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/db.Account'
+            type: array
+        "400":
+          description: error
+          schema:
+            type: string
+        "404":
+          description: error
+          schema:
+            type: string
+        "500":
+          description: error
+          schema:
+            type: string
+      summary: List accounts
+      tags:
+      - accounts
+  /accounts/update/:
+    post:
+      consumes:
+      - application/json
+      description: Update by json account
+      parameters:
+      - description: Update Account Req
+        in: body
+        name: updateAccountReq
+        required: true
+        schema:
+          $ref: '#/definitions/api.UpdateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Account'
+        "400":
+          description: error
+          schema:
+            type: string
+        "404":
+          description: error
+          schema:
+            type: string
+        "500":
+          description: error
+          schema:
+            type: string
+      summary: Update an account
+      tags:
+      - accounts
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
